@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Mi Sitio Web Dinámico - Gestión Pasantías</title>
+<style>
+    /* Reset y estilos base */
+    * {
+        margin: 0; padding: 0; box-sizing: border-box;
+    }
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #424242 0%, #f8f8f8 100%);
+        color: #ffffff;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        scroll-behavior: smooth;
+        line-height: 1.4;
+    }
+    header {
+        background-color: rgba(0, 0, 0, 0.3);
+        padding: 20px 40px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 5px rgba(49, 238, 2, 0.432);
+        flex-wrap: wrap;
+    }
+    header h1 {
+        font-size: 1.8rem;
+        letter-spacing: 2px;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+    nav {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px;
+    }
+    .nav-btn {
+        background: #555;
+        color: white;
+        border: none;
+        padding: 10px 18px;
+        cursor: pointer;
+        border-radius: 5px;
+        transition: background 0.3s ease, transform 0.2s ease;
+        font-weight: 700;
+    }
+    .nav-btn:hover {
+        background: #ffd700;
+        color: #000;
+        transform: scale(1.05);
+    }
+    .nav-btn.active {
+        background: #ffd700;
+        color: #000;
+    }
+    main {
+        flex-grow: 1;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 40px 20px;
+        min-height: 75vh;
+    }
+    #content {
+        width: 100%;
+        max-width: 960px;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        min-height: 500px;
+        overflow-y: auto;
+    }
+    h2 {
+        font-size: 2.2rem;
+        margin-bottom: 20px;
+        font-weight: 800;
+        letter-spacing: 1px;
+        color: #ffd700;
+    }
+    p, label {
+        font-size: 1.1rem;
+        margin-bottom: 15px;
+    }
+    ul {
+        list-style-type: disc;
+        padding-left: 20px;
+        color: #fff;
+        margin-bottom: 20px;
+    }
+    ul li {
+        margin-bottom: 10px;
+    }
+    .btn-primary, button {
+        background: #ffd700;
+        color: #000;
+        font-weight: 700;
+        padding: 12px 28px;
+        font-size: 1.1rem;
+        border-radius: 50px;
+        cursor: pointer;
+        border: none;
+        box-shadow: 0 5px 15px rgba(255, 215, 0, 0.6);
+        transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+        margin-top: 10px;
+        text-align: center;
+        display: inline-block;
+    }
+    .btn-primary:hover, button:hover {
+        background: #ffc200;
+        box-shadow: 0 8px 20px rgba(255, 194, 0, 0.8);
+        transform: scale(1.05);
+    }
+    form {
+        max-width: 600px;
+        margin: 0 auto 30px auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    textarea,
+    select,
+    input[type="number"] {
+        width: 90%;
+        max-width: 400px;
+        padding: 12px 15px;
+        margin-bottom: 15px;
+        border-radius: 8px;
+        border: none;
+        font-size: 1rem;
+        outline: none;
+    }
+    textarea {
+        resize: vertical;
+        font-family: inherit;
+        min-height: 80px;
+    }
+    #form-status, #login-status, #comentarios-status, #admin-status-mod, #status-registrar-pasante, #status-registrar-empresa {
+        margin-top: 10px;
+        font-weight: 700;
+        min-height: 24px;
+        text-align: center;
+    }
+    section.listado {
+        margin-top: 20px;
+    }
+    section.listado ul {
+        max-height: 200px;
+        overflow-y: auto;
+        padding-left: 1.2em;
+        background: rgba(255 255 255 / 0.1);
+        border-radius: 8px;
+    }
+    .comentario {
+        background: rgba(255 255 255 / 0.15);
+        padding: 8px 12px;
+        margin-bottom: 10px;
+        border-radius: 6px;
+        text-align: left;
+        font-size: 0.95rem;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+    }
+    label[for="comentario-agregar"] {
+        margin-top: 5px;
+        font-weight: 700;
+        color: #ffd700;
+        align-self: flex-start;
+    }
+    /* Scrollbar personalizado para listas */
+    #ul-pasantes::-webkit-scrollbar,
+    #ul-empresas::-webkit-scrollbar,
+    #ul-moderadores::-webkit-scrollbar,
+    #ul-asignaciones::-webkit-scrollbar,
+    #comentarios-list::-webkit-scrollbar {
+        width: 8px;
+    }
+    #ul-pasantes::-webkit-scrollbar-thumb,
+    #ul-empresas::-webkit-scrollbar-thumb,
+    #ul-moderadores::-webkit-scrollbar-thumb,
+    #ul-asignaciones::-webkit-scrollbar-thumb,
+    #comentarios-list::-webkit-scrollbar-thumb {
+        background: #ffd700;
+        border-radius: 10px;
+    }
+    /* Responsive */
+    @media (max-width: 600px) {
+        header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        nav {
+            margin-top: 10px;
+            width: 100%;
+        }
+        .nav-btn {
+            margin: 5px 3px;
+            min-width: 100%;
+            font-size: 0.95rem;
+        }
+        main {
+            padding: 20px 10px;
+        }
+        #content {
+            padding: 20px;
+            max-height: unset;
+            min-height: auto;
+        }
+        h2 {
+            font-size: 1.8rem;
+        }
+    }
+    footer {
+        background-color: rgba(0, 0, 0, 0.3);
+        text-align: center;
+        padding: 12px 20px;
+        font-size: 0.9rem;
+        color: #ccc;
+        margin-top: auto;
+        user-select: none;
+    }
+</style>
+</head>
+<body>
+<header>
+    <h1>Mi Sitio Web - Gestión Pasantías</h1>
+    <nav id="nav-bar" aria-label="Menú de navegación principal">
+        <!-- Menú dinámico -->
+    </nav>
+</header>
+<main>
+    <section id="content" tabindex="0" aria-live="polite">
+        <!-- Contenido dinámico cargado aquí -->
+    </section>
+</main>
+<footer>
+    &copy; 2025 Mi Sitio Web. Todos los derechos reservados.
+</footer>
+
+<script>
+// Datos en localStorage
+const STORAGE_KEYS = {
+    pasantes: 'pasantes_gestion_pasantias',
+    moderadores: 'moderadores_gestion_pasantias',
+    empresas: 'empresas_gestion_pasantias',
+    currentUser: 'currentUser_gestion_pasantias'
+};
+
+// Usuario administrador inicial (controlado por ti)
+const administrador = {
+    nombre: "Administrador Principal",
+    email: "admin@empresa.com",
+    password: "admin123", // Se recomienda cambiar
+    role: "admin"
+};
+
+// Variables en memoria sincronizadas con storage
+let pasantes = [];
+let moderadores = [];
+let empresas = [];
+let currentUser = null;
+
+// CARGAR DATOS DESDE STORAGE
+function cargarDatos() {
+    const modStored = localStorage.getItem(STORAGE_KEYS.moderadores);
+    if (modStored) {
+        moderadores = JSON.parse(modStored);
+    } else {
+        // Si no existe moderadores en storage, crear array y añadir admin
+        moderadores = [
+            {nombre: administrador.nombre, email: administrador.email, password: administrador.password}
+        ];
+        guardarModeradores();
+    }
+
+    const pasStored = localStorage.getItem(STORAGE_KEYS.pasantes);
+    pasantes = pasStored ? JSON.parse(pasStored) : [];
+
+    const empStored = localStorage.getItem(STORAGE_KEYS.empresas);
+    empresas = empStored ? JSON.parse(empStored) : [];
+
+    const userStored = sessionStorage.getItem(STORAGE_KEYS.currentUser);
+    currentUser = userStored ? JSON.parse(userStored) : null;
+}
+
+// GUARDAR DATOS EN STORAGE
+function guardarPasantes(){
+    localStorage.setItem(STORAGE_KEYS.pasantes, JSON.stringify(pasantes));
+}
+function guardarModeradores(){
+    localStorage.setItem(STORAGE_KEYS.moderadores, JSON.stringify(moderadores));
+}
+function guardarEmpresas(){
+    localStorage.setItem(STORAGE_KEYS.empresas, JSON.stringify(empresas));
+}
+function guardarSesion(){
+    if(currentUser) {
+        sessionStorage.setItem(STORAGE_KEYS.currentUser, JSON.stringify(currentUser));
+    } else {
+        sessionStorage.removeItem(STORAGE_KEYS.currentUser);
+    }
+}
+
+// Asignar pasantes a empresas según nota y nivel importancia
+function asignarPasantes() {
+    let pasantesOrdenados = [...pasantes].sort((a,b) => b.nota - a.nota);
+    const niveles = { "Importante": 1, "Medio importante": 2, "No tan importante": 3 };
+    let empresasOrdenadas = [...empresas].sort((a,b) => niveles[a.importancia] - niveles[b.importancia]);
+
+    // Reset asignaciones pasantes
+    pasantesOrdenados.forEach(p => { 
+        p.asignadoEmpresa = null; 
+        p.ubicacionEmpresa = ''; 
+    });
+    // Reset empresas con asignados para evitar repetidos (si se quisiera limitar)
+    // En este caso no limitamos mínimo ni máximo por empresa
+
+    let asignaciones = [];
+    pasantesOrdenados.forEach(p => {
+        for(let emp of empresasOrdenadas) {
+            if(p.asignadoEmpresa) break;
+            if(emp.importancia === "Importante" && p.nota >= 15) {
+                p.asignadoEmpresa = emp.nombre;
+                p.ubicacionEmpresa = emp.ubicacion;
+                asignaciones.push({pasante: p.nombre, empresa: emp.nombre});
+                break;
+            } else if(emp.importancia === "Medio importante" && p.nota >=10 && p.nota<15) {
+                p.asignadoEmpresa = emp.nombre;
+                p.ubicacionEmpresa = emp.ubicacion;
+                asignaciones.push({pasante: p.nombre, empresa: emp.nombre});
+                break;
+            } else if(emp.importancia === "No tan importante" && p.nota < 10) {
+                p.asignadoEmpresa = emp.nombre;
+                p.ubicacionEmpresa = emp.ubicacion;
+                asignaciones.push({pasante: p.nombre, empresa: emp.nombre});
+                break;
+            }
+        }
+    });
+    guardarPasantes();
+    return asignaciones;
+}
+
+// Renderizar menú según usuario actual
+function renderMenu() {
+    const nav = document.getElementById('nav-bar');
+    nav.innerHTML = '';
+
+    const btnInicio = crearNavButton('Inicio', 'inicio');
+    const btnServicios = crearNavButton('Servicios', 'servicios');
+    const btnNosotros = crearNavButton('Nosotros', 'nosotros');
+    const btnContacto = crearNavButton('Contacto', 'contacto');
+
+    nav.appendChild(btnInicio);
+    nav.appendChild(btnServicios);
+    nav.appendChild(btnNosotros);
+    nav.appendChild(btnContacto);
+
+    if(currentUser){
+        if(currentUser.role === 'admin') {
+            nav.appendChild(crearNavButton('Admin - Gestión', 'admin'));
+            nav.appendChild(crearNavButton('Asignaciones', 'asignaciones'));
+        } else if(currentUser.role === 'moderador'){
+            nav.appendChild(crearNavButton('Moderador - Gestión', 'moderador'));
+            nav.appendChild(crearNavButton('Asignaciones', 'asignaciones'));
+        } else if(currentUser.role === 'pasante'){
+            nav.appendChild(crearNavButton('Área Pasante', 'pasante'));
+        }
+        const btnLogout = document.createElement('button');
+        btnLogout.textContent = `Cerrar sesión (${currentUser.nombre})`;
+        btnLogout.className = 'nav-btn';
+        btnLogout.onclick = () => {
+            logout();
+        };
+        nav.appendChild(btnLogout);
+    } else {
+        // Sin login
+        nav.appendChild(crearNavButton('Login', 'login'));
+    }
+}
+
+function crearNavButton(text, page) {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'nav-btn';
+    btn.textContent = text;
+    btn.dataset.page = page;
+    btn.onclick = () => {
+        loadPage(page);
+    };
+    return btn;
+}
+
+const pages = {
+    inicio: `
+        <div class="hero">
+            <h2>Bienvenido a Mi Página de Inicio</h2>
+            <p>Descubre contenido interesante, explora nuestros servicios y conoce más sobre nosotros. Estamos aquí para ayudarte a crecer y tener éxito en tu pasantía.</p>
+        </div>
+    `,
+    servicios: `
+        <h2>Servicios</h2>
+        <p>Ofrecemos una amplia gama de servicios personalizados para satisfacer las necesidades específicas de las empresas. Desde desarrollo web y marketing digital hasta consultoría estratégica, nuestros pasantes están preparados para ayudarles a alcanzar sus objetivos.</p>
+        <ul>
+            <li>Desarrollo Web Profesional</li>
+            <li>Marketing Digital y SEO</li>
+            <li>Consultoría de Negocios</li>
+            <li>Diseño gráfico y branding</li>
+            <li>Mantenimiento de dispositivos</li>
+            <li>Redes y uso de apps de ofimática</li>
+        </ul>
+    `,
+    nosotros: `
+        <h2>Nosotros</h2>
+        <p>Somos un equipo apasionado y dedicado a brindar soluciones innovadoras y eficientes que impulsen a los pasantes a alcanzar éxito. Nuestra misión es transformar ideas en realidades a través de creatividad, tecnología y compromiso con la calidad.</p>
+        <p>Con años de experiencia en el sector, nos enorgullecemos de trabajar mano a mano con distintas empresas para crear pasantes que marcan la diferencia.</p>
+    `,
+    contacto: `
+        <h2>Contacto</h2>
+        <p>¿Tienes preguntas? No dudes en contactarnos a través del siguiente formulario. Estamos aquí para ayudarte.</p>
+        <form id="contact-form" aria-label="Formulario de contacto">
+            <input type="text" id="name" name="name" placeholder="Nombre completo" required aria-required="true" />
+            <input type="email" id="email" name="email" placeholder="Correo electrónico" required aria-required="true" />
+            <textarea id="message" name="message" placeholder="Tu mensaje" rows="5" required aria-required="true"></textarea>
+            <button type="submit">Enviar Mensaje</button>
+            <p id="form-status" role="alert"></p>
+        </form>
+    `,
+    login: `
+        <h2>Iniciar Sesión</h2>
+        <form id="login-form" aria-label="Formulario de inicio de sesión">
+            <input type="email" id="email-login" name="email" placeholder="Correo electrónico" required aria-required="true" autocomplete="username"/>
+            <input type="password" id="password-login" name="password" placeholder="Contraseña" required aria-required="true" autocomplete="current-password"/>
+            <select id="role-login" name="role" aria-label="Rol" required>
+                <option value="" disabled selected>Selecciona tipo de usuario</option>
+                <option value="pasante">Pasante</option>
+                <option value="moderador">Moderador</option>
+                <option value="admin">Administrador</option>
+            </select>
+            <button type="submit">Iniciar Sesión</button>
+            <p id="login-status" role="alert"></p>
+        </form>
+    `,
+    admin: `
+        <h2>Área Administrador</h2>
+        <section>
+            <h3>Agregar Moderador</h3>
+            <form id="form-agregar-moderador" aria-label="Formulario de agregar moderador">
+                <input type="text" id="admin-nombre-moderador" placeholder="Nombre completo" required aria-required="true" autocomplete="name" />
+                <input type="email" id="admin-email-moderador" placeholder="Correo electrónico" required aria-required="true" autocomplete="email" />
+                <input type="password" id="admin-password-moderador" placeholder="Contraseña" required aria-required="true" autocomplete="new-password" />
+                <button type="submit">Agregar Moderador</button>
+                <p id="admin-status-mod" style="margin-top:8px;"></p>
+            </form>
+        </section>
+        <section style="margin-top: 30px;">
+            <h3>Gestión de Pasantes</h3>
+            <div id="listado-pasantes-admin" style="max-height: 260px; overflow-y:auto; text-align:left; background:rgba(255 255 255 / 0.1); padding:10px; border-radius:8px;"></div>
+        </section>
+    `,
+    moderador: `
+        <h2>Área de Moderador</h2>
+        <section>
+            <h3>Registrar Pasante</h3>
+            <form id="form-registrar-pasante" aria-label="Formulario de registro de pasantes">
+                <input type="text" id="mod-nombre-pasante" placeholder="Nombre completo" required aria-required="true" autocomplete="name" />
+                <input type="email" id="mod-email-pasante" placeholder="Correo electrónico" required aria-required="true" autocomplete="email" />
+                <input type="password" id="mod-password-pasante" placeholder="Contraseña" required aria-required="true" autocomplete="new-password" />
+                <label for="mod-nota-pasante" style="color:#ffd700; font-weight:700;">Nota (0-20):</label>
+                <input type="number" id="mod-nota-pasante" min="0" max="20" placeholder="Ej: 18" required aria-required="true" />
+                <label for="mod-horas-totales" style="color:#ffd700; font-weight:700;">Horas Totales Requeridas:</label>
+                <input type="number" id="mod-horas-totales" min="0" placeholder="Ej: 160" required aria-required="true" />
+                <button type="submit">Agregar Pasante</button>
+                <p id="status-registrar-pasante"></p>
+            </form>
+        </section>
+        <section style="margin-top: 30px;">
+            <h3>Registrar Empresa</h3>
+            <form id="form-registrar-empresa" aria-label="Formulario de registro de empresas">
+                <input type="text" id="mod-nombre-empresa" placeholder="Nombre de la empresa" required aria-required="true" autocomplete="organization" />
+                <select id="mod-importancia-empresa" required aria-required="true" aria-label="Nivel de importancia de la empresa">
+                    <option value="" disabled selected>Seleccione nivel de importancia</option>
+                    <option value="Importante">Importante</option>
+                    <option value="Medio importante">Medio importante</option>
+                    <option value="No tan importante">No tan importante</option>
+                </select>
+                <input type="text" id="mod-ubicacion-empresa" placeholder="Ubicación de la empresa" required aria-required="true" />
+                <button type="submit">Agregar Empresa</button>
+                <p id="status-registrar-empresa"></p>
+            </form>
+        </section>
+        <section style="margin-top: 40px;">
+            <h3>Listado de Pasantes</h3>
+            <div id="listado-pasantes-moderador" style="max-height: 240px; overflow-y:auto; text-align:left; background:rgba(255 255 255 / 0.1); padding:10px; border-radius:8px;"></div>
+        </section>
+        <section style="margin-top: 40px;">
+            <h3>Listado de Empresas</h3>
+            <ul id="listado-empresas-moderador" style="max-height: 180px; overflow-y:auto; list-style:none; padding-left:0;"></ul>
+        </section>
+    `,
+    pasante: `
+        <h2>Área del Pasante</h2>
+        <section id="datos-pasante">
+            <p><strong>Nombre:</strong> <span id="pasante-nombre"></span></p>
+            <p><strong>Correo:</strong> <span id="pasante-email"></span></p>
+            <p><strong>Nota:</strong> <span id="pasante-nota"></span></p>
+            <p><strong>Horas Totales Requeridas:</strong> <span id="pasante-horas-totales"></span></p>
+            <p><strong>Horas Completadas:</strong> <span id="pasante-horas-completadas"></span></p>
+            <p><strong>Empresa Asignada:</strong> <span id="pasante-empresa"></span></p>
+            <p><strong>Ubicación:</strong> <span id="pasante-ubicacion"></span></p>
+        </section>
+        <section style="margin-top: 20px; text-align: center;">
+            <h3>Comentarios del Moderador</h3>
+            <div id="comentarios-list" style="max-height:200px; overflow-y:auto; text-align:left;"></div>
+        </section>
+    `,
+    asignaciones: `
+        <h2>Asignaciones Automáticas de Pasantes a Empresas</h2>
+        <p>Las asignaciones se hacen según la nota del pasante y la importancia de la empresa.</p>
+        <ul id="ul-asignaciones"></ul>
+    `
+};
+
+// Cargar página y eventos
+function loadPage(page) {
+    const contentEl = document.getElementById('content');
+    contentEl.innerHTML = pages[page] || '<p>Página no encontrada.</p>';
+    contentEl.focus();
+
+    // Actualizar activo en menú
+    document.querySelectorAll('#nav-bar .nav-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.page === page);
+    });
+
+    switch(page) {
+        case 'contacto':
+            iniciarContactForm();
+            break;
+        case 'login':
+            iniciarLoginForm();
+            break;
+        case 'admin':
+            if(!currentUser || currentUser.role !== 'admin') {
+                alert('Acceso denegado. Debe iniciar sesión como administrador.');
+                loadPage('inicio');
+                return;
+            }
+            iniciarAdminArea();
+            break;
+        case 'moderador':
+            if(!currentUser || (currentUser.role !== 'moderador' && currentUser.role !== 'admin')) {
+                alert('Acceso denegado. Debe iniciar sesión como moderador.');
+                loadPage('inicio');
+                return;
+            }
+            iniciarModeradorArea();
+            break;
+        case 'pasante':
+            if(!currentUser || currentUser.role !== 'pasante') {
+                alert('Acceso denegado. Debe iniciar sesión como pasante.');
+                loadPage('inicio');
+                return;
+            }
+            mostrarDatosPasante();
+            break;
+        case 'asignaciones':
+            if(!currentUser || (currentUser.role !== 'moderador' && currentUser.role !== 'admin')) {
+                alert('Acceso denegado. Debe iniciar sesión como moderador o administrador.');
+                loadPage('inicio');
+                return;
+            }
+            mostrarAsignaciones();
+            break;
+    }
+}
+
+// Formulario contacto
+function iniciarContactForm() {
+    const form = document.getElementById('contact-form');
+    const statusEl = document.getElementById('form-status');
+    if (!form || !statusEl) return;
+    form.onsubmit = e => {
+        e.preventDefault();
+        statusEl.style.color = '#ffd700';
+        statusEl.textContent = 'Enviando mensaje...';
+        setTimeout(() => {
+            statusEl.style.color = '#00ff00';
+            statusEl.textContent = 'Gracias por contactarnos. Te responderemos pronto.';
+            form.reset();
+        }, 1500);
+    };
+}
+
+// Formulario login
+function iniciarLoginForm() {
+    const form = document.getElementById('login-form');
+    const statusEl = document.getElementById('login-status');
+    if (!form || !statusEl) return;
+
+    form.onsubmit = e => {
+        e.preventDefault();
+        const email = form['email'].value.trim().toLowerCase();
+        const password = form['password'].value;
+        const role = form['role'].value;
+        statusEl.style.color = '#ffd700';
+        statusEl.textContent = 'Verificando credenciales...';
+
+        setTimeout(() => {
+            if (role === 'pasante') {
+                const user = pasantes.find(p => p.email.toLowerCase() === email && p.password === password);
+                if (user) {
+                    currentUser = { email: user.email, role: 'pasante', nombre: user.nombre };
+                    statusEl.style.color = '#00ff00';
+                    statusEl.textContent = `Bienvenido, ${user.nombre} (Pasante)`;
+                    guardarSesion();
+                    renderMenu();
+                    loadPage('pasante');
+                } else {
+                    statusEl.style.color = '#ff4444';
+                    statusEl.textContent = 'Credenciales inválidas para pasante.';
+                }
+            } else if (role === 'moderador') {
+                const user = moderadores.find(m => m.email.toLowerCase() === email && m.password === password);
+                if (user) {
+                    currentUser = { email: user.email, role: 'moderador', nombre: user.nombre };
+                    statusEl.style.color = '#00ff00';
+                    statusEl.textContent = `Bienvenido, Moderador ${user.nombre}`;
+                    guardarSesion();
+                    renderMenu();
+                    loadPage('moderador');
+                } else {
+                    statusEl.style.color = '#ff4444';
+                    statusEl.textContent = 'Credenciales inválidas para moderador.';
+                }
+            } else if (role === 'admin') {
+                if (administrador.email.toLowerCase() === email && administrador.password === password) {
+                    currentUser = { email: administrador.email, role: "admin", nombre: administrador.nombre };
+                    statusEl.style.color = '#00ff00';
+                    statusEl.textContent = `Bienvenido, Administrador ${administrador.nombre}`;
+                    guardarSesion();
+                    renderMenu();
+                    loadPage('admin');
+                } else {
+                    statusEl.style.color = '#ff4444';
+                    statusEl.textContent = 'Credenciales inválidas para administrador.';
+                }
+            } else {
+                statusEl.style.color = '#ff4444';
+                statusEl.textContent = 'Por favor seleccione un rol.';
+            }
+        }, 1000);
+    };
+}
+
+// Admin: agregar moderadores y gestionar pasantes
+function iniciarAdminArea() {
+    const formAgregarMod = document.getElementById('form-agregar-moderador');
+    const statusMod = document.getElementById('admin-status-mod');
+    const listadoPasantesAdmin = document.getElementById('listado-pasantes-admin');
+
+    formAgregarMod.onsubmit = e => {
+        e.preventDefault();
+        statusMod.textContent = '';
+        const nombre = document.getElementById('admin-nombre-moderador').value.trim();
+        const email = document.getElementById('admin-email-moderador').value.trim().toLowerCase();
+        const password = document.getElementById('admin-password-moderador').value;
+
+        if (!nombre || !email || !password) {
+            statusMod.style.color = '#ff4444';
+            statusMod.textContent = 'Complete todos los campos.';
+            return;
+        }
+        if (moderadores.find(m => m.email === email)) {
+            statusMod.style.color = '#ff4444';
+            statusMod.textContent = 'Ya existe un moderador con ese email.';
+            return;
+        }
+        moderadores.push({ nombre, email, password });
+        guardarModeradores();
+        statusMod.style.color = '#00ff00';
+        statusMod.textContent = `Moderador ${nombre} agregado.`;
+        formAgregarMod.reset();
+        renderListaPasantesAdmin();
+    };
+
+    // Mostrar pasantes con posibilidad de editar
+    function renderListaPasantesAdmin() {
+        listadoPasantesAdmin.innerHTML = '';
+        if (pasantes.length === 0) {
+            listadoPasantesAdmin.textContent = 'No hay pasantes registrados.';
+            return;
+        }
+
+        pasantes.forEach((p) => {
+            const div = document.createElement('div');
+            div.style = "margin-bottom:15px; background: rgba(255 255 255 / 0.1); padding: 12px; border-radius: 8px;";
+
+            const title = document.createElement('h4');
+            title.textContent = `${p.nombre} (${p.email}) - Nota: ${p.nota}`;
+            div.appendChild(title);
+
+            // Editable campos similares a moderador pero sin eliminar empresas
+
+            const labelHorasTotales = document.createElement('label');
+            labelHorasTotales.textContent = 'Horas Totales Requeridas:';
+            div.appendChild(labelHorasTotales);
+            const inputHorasTotales = document.createElement('input');
+            inputHorasTotales.type = "number";
+            inputHorasTotales.min = 0;
+            inputHorasTotales.value = p.horasTotales || 0;
+            div.appendChild(inputHorasTotales);
+
+            const labelHorasCumplidas = document.createElement('label');
+            labelHorasCumplidas.textContent = 'Horas Cumplidas:';
+            div.appendChild(labelHorasCumplidas);
+            const inputHorasCumplidas = document.createElement('input');
+            inputHorasCumplidas.type = "number";
+            inputHorasCumplidas.min = 0;
+            inputHorasCumplidas.value = p.horasCumplidas || 0;
+            div.appendChild(inputHorasCumplidas);
+
+            const labelEmpresa = document.createElement('label');
+            labelEmpresa.textContent = 'Empresa Asignada:';
+            div.appendChild(labelEmpresa);
+            const inputEmpresa = document.createElement('input');
+            inputEmpresa.type = 'text';
+            inputEmpresa.value = p.asignadoEmpresa || '';
+            div.appendChild(inputEmpresa);
+
+            const labelUbicacion = document.createElement('label');
+            labelUbicacion.textContent = 'Ubicación Empresa:';
+            div.appendChild(labelUbicacion);
+            const inputUbicacion = document.createElement('input');
+            inputUbicacion.type = 'text';
+            inputUbicacion.value = p.ubicacionEmpresa || '';
+            div.appendChild(inputUbicacion);
+
+            const btnGuardar = document.createElement('button');
+            btnGuardar.textContent = 'Guardar Cambios';
+            btnGuardar.style.marginTop = '10px';
+
+            btnGuardar.onclick = () => {
+                // Validar y guardar cambios
+                const ht = Number(inputHorasTotales.value);
+                const hc = Number(inputHorasCumplidas.value);
+                if (isNaN(ht) || ht < 0 || isNaN(hc) || hc < 0 || hc > ht) {
+                    alert('Valores inválidos para horas.');
+                    return;
+                }
+                p.horasTotales = ht;
+                p.horasCumplidas = hc;
+                p.asignadoEmpresa = inputEmpresa.value.trim();
+                p.ubicacionEmpresa = inputUbicacion.value.trim();
+                guardarPasantes();
+                alert(`Cambios guardados en pasante ${p.nombre}`);
+            };
+            div.appendChild(btnGuardar);
+
+            listadoPasantesAdmin.appendChild(div);
+        });
+    }
+
+    renderListaPasantesAdmin();
+}
+
+// Moderador área
+function iniciarModeradorArea() {
+    const statusPasante = document.getElementById('status-registrar-pasante');
+    const statusEmpresa = document.getElementById('status-registrar-empresa');
+    const formPasante = document.getElementById('form-registrar-pasante');
+    const formEmpresa = document.getElementById('form-registrar-empresa');
+    const listadoPasantes = document.getElementById('listado-pasantes-moderador');
+    const listadoEmpresas = document.getElementById('listado-empresas-moderador');
+
+    formPasante.onsubmit = e => {
+        e.preventDefault();
+        const nombre = document.getElementById('mod-nombre-pasante').value.trim();
+        const email = document.getElementById('mod-email-pasante').value.trim().toLowerCase();
+        const password = document.getElementById('mod-password-pasante').value;
+        const nota = Number(document.getElementById('mod-nota-pasante').value);
+        const horasTotales = Number(document.getElementById('mod-horas-totales').value);
+        statusPasante.style.color = '';
+        statusPasante.textContent = '';
+        if(!nombre || !email || !password || isNaN(nota) || nota < 0 || nota > 20 || isNaN(horasTotales) || horasTotales < 0) {
+            statusPasante.style.color = "#ff4444";
+            statusPasante.textContent = 'Por favor completa todos los campos correctamente.';
+            return;
+        }
+        if(pasantes.find(p=>p.email === email)) {
+            statusPasante.style.color = "#ff4444";
+            statusPasante.textContent = 'Ya existe un pasante registrado con ese correo.';
+            return;
+        }
+        pasantes.push({
+            nombre,
+            email,
+            password,
+            nota,
+            horasTotales,
+            horasCumplidas: 0,
+            asignadoEmpresa: null,
+            ubicacionEmpresa: '',
+            comentarios: []
+        });
+        guardarPasantes();
+        statusPasante.style.color = "#00ff00";
+        statusPasante.textContent = 'Pasante agregado exitosamente.';
+        formPasante.reset();
+        renderListaPasantesModerador();
+    };
+
+    formEmpresa.onsubmit = e => {
+        e.preventDefault();
+        const nombre = document.getElementById('mod-nombre-empresa').value.trim();
+        const importancia = document.getElementById('mod-importancia-empresa').value;
+        const ubicacion = document.getElementById('mod-ubicacion-empresa').value.trim();
+
+        statusEmpresa.style.color = '';
+        statusEmpresa.textContent = '';
+
+        if(!nombre || !importancia || !ubicacion) {
+            statusEmpresa.style.color = "#ff4444";
+            statusEmpresa.textContent = 'Completa todos los campos correctamente.';
+            return;
+        }
+        if(empresas.find(e => e.nombre.toLowerCase() === nombre.toLowerCase())) {
+            statusEmpresa.style.color = "#ff4444";
+            statusEmpresa.textContent = 'Ya existe una empresa con ese nombre.';
+            return;
+        }
+        empresas.push({
+            nombre,
+            importancia,
+            ubicacion
+        });
+        guardarEmpresas();
+        statusEmpresa.style.color = "#00ff00";
+        statusEmpresa.textContent = 'Empresa agregada exitosamente.';
+        formEmpresa.reset();
+        renderListaEmpresasModerador();
+    };
+
+    function renderListaPasantesModerador() {
+        listadoPasantes.innerHTML = '';
+        if(pasantes.length === 0) {
+            listadoPasantes.textContent = 'No hay pasantes registrados.';
+            return;
+        }
+
+        pasantes.forEach((p) => {
+            const div = document.createElement('div');
+            div.style = "margin-bottom:15px; background: rgba(255 255 255 / 0.1); padding: 12px; border-radius: 8px;";
+
+            const title = document.createElement('h4');
+            title.textContent = `${p.nombre} (${p.email}) - Nota: ${p.nota}`;
+            div.appendChild(title);
+
+            const horasTotalesLabel = document.createElement('label');
+            horasTotalesLabel.textContent = `Horas Totales Requeridas: ${p.horasTotales}`;
+            div.appendChild(horasTotalesLabel);
+
+            const horasCumplidasLabel = document.createElement('label');
+            horasCumplidasLabel.textContent = 'Horas Cumplidas:';
+            horasCumplidasLabel.style.marginTop = '8px';
+            div.appendChild(horasCumplidasLabel);
+
+            const inputHoras = document.createElement('input');
+            inputHoras.type = 'number';
+            inputHoras.min = 0;
+            inputHoras.max = p.horasTotales;
+            inputHoras.value = p.horasCumplidas;
+            inputHoras.style.width = '70px';
+            div.appendChild(inputHoras);
+
+            const empresaAssignLabel = document.createElement('label');
+            empresaAssignLabel.textContent = 'Empresa Asignada:';
+            empresaAssignLabel.style.marginTop = '8px';
+            div.appendChild(empresaAssignLabel);
+
+            const selectEmpresa = document.createElement('select');
+            let defaultOption = document.createElement('option');
+            defaultOption.value = '';
+            defaultOption.textContent = '-- Sin asignar --';
+            selectEmpresa.appendChild(defaultOption);
+
+            empresas.forEach(e => {
+                const opt = document.createElement('option');
+                opt.value = e.nombre;
+                opt.textContent = `${e.nombre} (${e.importancia})`;
+                if(p.asignadoEmpresa === e.nombre) opt.selected = true;
+                selectEmpresa.appendChild(opt);
+            });
+            div.appendChild(selectEmpresa);
+
+            const ubicLabel = document.createElement('label');
+            ubicLabel.textContent = 'Ubicación Empresa:';
+            ubicLabel.style.marginTop = '8px';
+            div.appendChild(ubicLabel);
+            const inputUbic = document.createElement('input');
+            inputUbic.type = 'text';
+            inputUbic.value = p.ubicacionEmpresa || '';
+            inputUbic.style.width = '100%';
+            div.appendChild(inputUbic);
+
+            const comLabel = document.createElement('label');
+            comLabel.textContent = 'Agregar Comentario:';
+            comLabel.style.marginTop = '8px';
+            div.appendChild(comLabel);
+            const inputComent = document.createElement('textarea');
+            inputComent.rows = 3;
+            inputComent.placeholder = 'Escribe un comentario para este pasante...';
+            div.appendChild(inputComent);
+            const btnAgregarComent = document.createElement('button');
+            btnAgregarComent.textContent = 'Agregar Comentario';
+            btnAgregarComent.style.marginTop = '5px';
+            div.appendChild(btnAgregarComent);
+
+            if(p.comentarios && p.comentarios.length > 0){
+                const titComent = document.createElement('p');
+                titComent.style.fontWeight = '700';
+                titComent.style.marginTop = '12px';
+                titComent.textContent = 'Comentarios previos:';
+                div.appendChild(titComent);
+
+                p.comentarios.forEach(c => {
+                    const divComent = document.createElement('div');
+                    divComent.className = 'comentario';
+                    divComent.textContent = c;
+                    div.appendChild(divComent);
+                });
+            }
+
+            const btnGuardar = document.createElement('button');
+            btnGuardar.textContent = 'Guardar Cambios';
+            btnGuardar.style.marginTop = '12px';
+            div.appendChild(btnGuardar);
+
+            btnGuardar.onclick = () => {
+                let valHoras = Number(inputHoras.value);
+                if(isNaN(valHoras) || valHoras < 0) valHoras = 0;
+                if(valHoras > p.horasTotales) valHoras = p.horasTotales;
+                p.horasCumplidas = valHoras;
+
+                const nuevaEmpresa = selectEmpresa.value;
+                p.asignadoEmpresa = nuevaEmpresa || null;
+
+                p.ubicacionEmpresa = inputUbic.value.trim();
+
+                guardarPasantes();
+
+                alert(`Cambios guardados para ${p.nombre}`);
+                renderListaPasantesModerador();
+            };
+
+            btnAgregarComent.onclick = () => {
+                const texto = inputComent.value.trim();
+                if(texto.length === 0) {
+                    alert('El comentario no puede estar vacío.');
+                    return;
+                }
+                p.comentarios = p.comentarios || [];
+                p.comentarios.push(texto);
+                guardarPasantes();
+                inputComent.value = '';
+                alert('Comentario agregado.');
+                renderListaPasantesModerador();
+            };
+
+            listadoPasantes.appendChild(div);
+        });
+    }
+    function renderListaEmpresasModerador() {
+        listadoEmpresas.innerHTML = '';
+        if(empresas.length === 0) {
+            listadoEmpresas.textContent = 'No hay empresas registradas.';
+            return;
+        }
+        empresas.forEach(e => {
+            const li = document.createElement('li');
+            li.textContent = `${e.nombre} — Importancia: ${e.importancia} — Ubicación: ${e.ubicacion}`;
+            listadoEmpresas.appendChild(li);
+        });
+    }
+    renderListaPasantesModerador();
+    renderListaEmpresasModerador();
+}
+
+// Pasante área con datos y comentarios
+function mostrarDatosPasante() {
+    if(!currentUser) return;
+    const pas = pasantes.find(p => p.email === currentUser.email);
+    if(!pas) {
+        alert('Usuario pasante no encontrado.');
+        loadPage('inicio');
+        return;
+    }
+    document.getElementById('pasante-nombre').textContent = pas.nombre;
+    document.getElementById('pasante-email').textContent = pas.email;
+    document.getElementById('pasante-nota').textContent = pas.nota;
+    document.getElementById('pasante-horas-totales').textContent = pas.horasTotales;
+    document.getElementById('pasante-horas-completadas').textContent = pas.horasCumplidas;
+    document.getElementById('pasante-empresa').textContent = pas.asignadoEmpresa || 'No asignada';
+    document.getElementById('pasante-ubicacion').textContent = pas.ubicacionEmpresa || 'N/A';
+
+    const contComentarios = document.getElementById('comentarios-list');
+    contComentarios.innerHTML = '';
+    if(pas.comentarios && pas.comentarios.length > 0) {
+        pas.comentarios.forEach(c => {
+            const divComent = document.createElement('div');
+            divComent.className = 'comentario';
+            divComent.textContent = c;
+            contComentarios.appendChild(divComent);
+        });
+    } else {
+        contComentarios.textContent = 'No hay comentarios disponibles.';
+    }
+}
+
+// Mostrar asignaciones para moderadores/admin
+function mostrarAsignaciones() {
+    const contentEl = document.getElementById('content');
+    contentEl.innerHTML =
+        `<h2>Asignaciones Automáticas de Pasantes a Empresas</h2>
+         <p>Las asignaciones se hacen según la nota del pasante y la importancia de la empresa.</p>`;
+    const lista = document.createElement('ul');
+    lista.id = 'ul-asignaciones';
+    contentEl.appendChild(lista);
+
+    let asignaciones = asignarPasantes();
+    if(asignaciones.length === 0) {
+        lista.innerHTML = '<li>No hay asignaciones disponibles.</li>';
+        return;
+    }
+    asignaciones.forEach(a => {
+        const li = document.createElement('li');
+        li.textContent = `${a.pasante} asignado a ${a.empresa}`;
+        lista.appendChild(li);
+    });
+}
+
+// Cerrar sesión
+function logout(){
+    currentUser = null;
+    guardarSesion();
+    renderMenu();
+    loadPage('inicio');
+}
+
+// Inicialización
+cargarDatos();
+renderMenu();
+loadPage('inicio');
+</script>
+</body>
+</html>
+
