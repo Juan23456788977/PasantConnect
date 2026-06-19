@@ -18,7 +18,7 @@ try {
     $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ? AND role = ?");
     $stmt->execute([$email, $role]);
     $user = $stmt->fetch();
-
+file_put_contents('debug_login.txt', print_r([$email, $role, $user], true), FILE_APPEND);
     if ($user && password_verify($password, $user['password'])) {
         unset($user['password']);
         echo json_encode(['success' => true, 'user' => $user]);
@@ -28,4 +28,5 @@ try {
 } catch (Exception $e) {
     echo json_encode(['success' => false, 'message' => 'Error interno del servidor']);
 }
+
 ?>
